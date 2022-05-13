@@ -29,11 +29,11 @@ public class Asymmetric {
     @FXML
     public void onEncryptButtonClick() {
         txt_encryptedText.setWrapText(true);
-        txt_encryptedText.setText(rsaCrypto.encrypt(txt_plainText.getText()));
+        txt_encryptedText.setText(rsaCrypto.encryptMessage(txt_plainText.getText()));
     }
 
     @FXML
     public void onDecryptButtonClick() {
-        txt_decryptedText.setText(rsaCrypto.decrypt(txt_encryptedText.getText()));
+        txt_decryptedText.setText(rsaCrypto.decryptMessage(txt_encryptedText.getText()));
     }
 }

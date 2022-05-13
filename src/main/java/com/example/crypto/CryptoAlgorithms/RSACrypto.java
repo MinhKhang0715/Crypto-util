@@ -1,6 +1,8 @@
 package com.example.crypto.CryptoAlgorithms;
 
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Random;
 
 public class RSACrypto {
@@ -34,40 +36,16 @@ public class RSACrypto {
         return d;
     }
 
-    public static BigInteger stringCipher(String message) {
-        message = message.toUpperCase();
-        StringBuilder cipher = new StringBuilder();
-        int i = 0, strLength = message.length();
-        while (i < strLength) {
-            int ch = message.charAt(i);
-            cipher.append(ch);
-            i++;
-        }
-        System.out.println(cipher);
-        return new BigInteger(cipher.toString());
-    }
-
-    public static String cipherToString(BigInteger message) {
-        String cipherString = message.toString();
-        StringBuilder output = new StringBuilder();
-        int i = 0, strLength = cipherString.length();
-        while (i < strLength) {
-            int temp = Integer.parseInt(cipherString.substring(i, i + 2));
-            char ch = (char) temp;
-            output.append(ch);
-            i += 2;
-        }
-        return output.toString();
-    }
-
     /**
      * Encrypting with the formula: C = M^e mod n
      * @param message is the message need to encrypt
      * @return String
      */
-    public String encrypt(String message) {
-        BigInteger cipher = stringCipher(message);
-        return cipher.modPow(e, primeProduct).toString();
+    public String encryptMessage(String message) {
+        return Base64.getEncoder().encodeToString(
+                (new BigInteger(message.getBytes(StandardCharsets.UTF_8)))
+                        .modPow(e, primeProduct).toByteArray()
+        );
     }
 
     /**
@@ -75,16 +53,8 @@ public class RSACrypto {
      * @param message is the message need to decrypt
      * @return String
      */
-    public String decrypt(String message) {
-        BigInteger cipher = new BigInteger(message);
-        return cipherToString(cipher.modPow(d, primeProduct));
-    }
-
-    public static void main(String[] args) {
-        String original = "Hello Im Minh Khang, Im a student from Sai Gon University";
-        RSACrypto crypto = new RSACrypto();
-        String encrypted = crypto.encrypt(original);
-        String decrypted = crypto.decrypt(encrypted);
-        System.out.println("Original: " + original + "\nEncrypted: " + encrypted + "\nDecrypted: " + decrypted);
+    public String decryptMessage(String message) {
+        byte[] messageBytes = Base64.getDecoder().decode(message);
+        return new String((new BigInteger(messageBytes)).modPow(d, primeProduct).toByteArray());
     }
 }
